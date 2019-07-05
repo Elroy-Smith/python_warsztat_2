@@ -86,4 +86,4 @@ if __name__ == "__main__":
 
     print(check_password("abc", hashed_password))
     print(check_password("abc", hashed_password2))
-
+    print(len(hashed_password))
