@@ -29,4 +29,18 @@ class User:
 
         last_id = cursor.fetchone()[0]
         self.__id = last_id
-        
+
+    @staticmethod
+    def load_by_id(cursor, user_id):
+        sql = """
+        SELECT * FROM "user" WHERE id=%s
+        """
+        cursor.execute(sql, (user_id, ))
+        data = cursor.fetchone()
+        if data:
+            id, username, email, hashed_password = data
+            user = User(username, email, hashed_password)
+            user._User__id = id
+            return user
+        else:
+            return None
