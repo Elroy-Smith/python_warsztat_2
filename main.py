@@ -14,5 +14,9 @@ if user is not None:
     print(user.id)
 else:
     print("Nie ma użytkownika o id = ", user_id)
+
+users = User.load_all(cursor)
+for user in users:
+    print(user.id , user.username, user.hashed_password, user.email)
 cursor.close()
 cnx.close()

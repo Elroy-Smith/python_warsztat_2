@@ -44,3 +44,20 @@ class User:
             return user
         else:
             return None
+
+    @staticmethod
+    def load_all(cursor):
+        sql = """
+        SELECT * FROM "user"
+        """
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        result = []
+        if data:
+            for row in data:
+                id, username, email, hashed_password = row
+                user = User(username, email, hashed_password)
+                user._User__id = id
+                result.append(user)
+        return result
+
