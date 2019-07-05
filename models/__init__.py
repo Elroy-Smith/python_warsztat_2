@@ -69,3 +69,14 @@ class User:
                 result.append(user)
         return result
 
+    def delete(self, cursor):
+        if self.__id != -1:
+            sql = """ DELETE FROM "user" WHERE id=%s"""
+            cursor.execute(sql, (self.__id,))
+            self.__id=-1
+            self.username=''
+            self.email=''
+            self.__hashed_password=''
+            return True
+        return False
+
