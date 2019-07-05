@@ -20,15 +20,21 @@ class User:
         self.__hashed_password = password_hash(password)
 
     def save(self, cursor):
-        sql = """
-        INSERT INTO "user"(username, email, hashed_password)
-        VALUES (%s, %s, %s) RETURNING id
-        """
+        if self.__id == -1:
+            sql = """
+            INSERT INTO "user"(username, email, hashed_password)
+            VALUES (%s, %s, %s) RETURNING id
+            """
 
-        cursor.execute(sql, (self.username, self.email, self.hashed_password))
+            cursor.execute(sql, (self.username, self.email, self.hashed_password))
 
-        last_id = cursor.fetchone()[0]
-        self.__id = last_id
+            last_id = cursor.fetchone()[0]
+            self.__id = last_id
+        else:
+            sql='''
+            UPDATE "user" SET username= %s, email = %s, hashed_password =%s WHERE id = %s 
+            '''
+            cursor.execute(sql, (self.username, self.email, self.hashed_password, self.__id))
 
     @staticmethod
     def load_by_id(cursor, user_id):
@@ -40,6 +46,7 @@ class User:
         if data:
             id, username, email, hashed_password = data
             user = User(username, email, hashed_password)
+            user._User__hashed_password = hashed_password
             user._User__id = id
             return user
         else:
@@ -58,6 +65,7 @@ class User:
                 id, username, email, hashed_password = row
                 user = User(username, email, hashed_password)
                 user._User__id = id
+                user._User__hashed_password = hashed_password
                 result.append(user)
         return result
 
